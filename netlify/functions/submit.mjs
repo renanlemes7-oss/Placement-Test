@@ -201,7 +201,8 @@ export default async (req) => {
   const level = LEVELS.find(l => total >= l.min && total <= l.max) || LEVELS[0];
   const exact = [1,2,3].every(i => w[i].status !== "pending");
 
-  // send the full report to Renan through Netlify Forms
+  // report for Renan; the browser submits it to Netlify Forms (the standard, reliable way)
+  let form = null;
   try {
     const report = [
       `PLACEMENT TEST (Full) — ${name}`,
@@ -215,7 +216,7 @@ export default async (req) => {
         writing[i].trim() || "(empty)", ""
       ])
     ].join("\n");
-    const form = new URLSearchParams({
+    form = {
       "form-name": "placement-results",
       name,
       level: `${level.name} (${level.cefr})`,
@@ -224,13 +225,11 @@ export default async (req) => {
       wrong_questions: wrong.join(", "),
       writing_scores: [1,2,3].map(i => `W${i}: ${w[i].status === "pending" ? "?" : w[i].score + "/8"}`).join(" | "),
       full_report: report
-    });
-    const site = process.env.URL;
-    if (site) await fetch(site + "/", { method:"POST", headers:{ "Content-Type":"application/x-www-form-urlencoded" }, body: form.toString() });
+    };
   } catch (e) { console.error("form", e.message); }
 
   // the review (correct answers + explanations) is only sent after the test is submitted
-  return Response.json({ mc, by, w, total, exact, level, review });
+  return Response.json({ mc, by, w, total, exact, level, review, form });
 };
 
 export const config = { path: "/api/submit" };
