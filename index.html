@@ -391,7 +391,7 @@ function pills(){
 /* ---------- RENDER ---------- */
 function render(){
   updateTop();
-  if(S.finished){ if(S.result) renderResults(); else submit(); return;}
+  if(S.finished){ if(S.result){ renderResults(); sendToRenan(); } else submit(); return;}
   if(S.stage===0){renderStart();return;}
   renderPart(PARTS[S.stage-1]);
 }
@@ -660,6 +660,16 @@ app.addEventListener("click",e=>{
   rvFilter=b.dataset.rv; document.getElementById("review").outerHTML=reviewHTML();
 });
 
+
+/* sends the report to Renan through Netlify Forms (dashboard + email notification) */
+async function sendToRenan(){
+  if(S.sent || !S.result || !S.result.form) return;
+  try{
+    const res=await fetch("/",{method:"POST",headers:{"Content-Type":"application/x-www-form-urlencoded"},body:new URLSearchParams(S.result.form).toString()});
+    if(res.ok){S.sent=true;save();}
+  }catch(e){}
+}
+
 /* ---------- SUBMIT (scored on the server) ---------- */
 let submitting=false;
 async function submit(){
@@ -675,7 +685,7 @@ async function submit(){
       body:JSON.stringify({name:S.name,answers:S.answers,writing:S.writing,minutes:S.start?Math.round((S.finishedAt-S.start)/60000):null})});
     if(!res.ok) throw new Error("HTTP "+res.status);
     S.result=await res.json(); save();
-    submitting=false; renderResults();
+    submitting=false; renderResults(); sendToRenan();
   }catch(e){
     submitting=false;
     app.innerHTML=`<section class="hero fade">${heroArt}
