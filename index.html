@@ -1,0 +1,783 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Placement Test · Renan Lemes</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Outfit:wght@400;500;600&display=swap">
+<style>
+:root{
+  --plum:#5f3e66;--plum-deep:#2f2934;--teal:#00736a;--teal-light:#4c9b8f;--lilac:#bc94c4;
+  --lilac-soft:#f6f4f8;--line:#e5e0e7;--cream:#f4f3ed;--surface:#fff;--ink:#2f2934;--muted:#69646f;
+  --highlight:#f1d570;--butter:#fdf6e1;--teal-soft:#e6efec;--sand:#ddd6c3;
+  --r-md:16px;--r-lg:28px;--shadow:0 8px 24px rgba(95,62,102,.08);--shadow-btn:0 6px 16px rgba(0,115,106,.30);
+  --display:"Fredoka",system-ui,sans-serif;--sans:"Outfit",system-ui,sans-serif;
+}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{background:var(--lilac-soft);color:var(--ink);font-family:var(--sans);font-size:18px;line-height:1.55;-webkit-font-smoothing:antialiased}
+button{font:inherit;cursor:pointer}
+h1,h2,h3{font-family:var(--display);margin:0;color:var(--plum)}
+.wrap{max-width:1120px;margin:0 auto;padding:0 24px}
+
+/* top bar */
+.top{position:sticky;top:0;z-index:20;background:rgba(246,244,248,.92);backdrop-filter:blur(8px);border-bottom:1.5px solid var(--line)}
+.top .wrap{display:flex;align-items:center;gap:20px;height:68px}
+.brand{display:flex;flex-direction:column;line-height:1}
+.brand b{font-family:var(--display);font-weight:700;font-size:22px;color:var(--plum)}
+.brand b span{color:var(--teal)}
+.brand small{font-size:12px;color:var(--muted);letter-spacing:.02em;margin-top:3px}
+.top .spacer{flex:1}
+.stat{font-family:var(--display);font-weight:600;font-size:15px;color:var(--plum);background:#fff;border:1.5px solid var(--line);border-radius:999px;padding:6px 14px;white-space:nowrap}
+.stat.timer{color:var(--teal)}
+.progress{position:absolute;left:0;bottom:-1.5px;height:3px;background:var(--teal-light);width:0;transition:width .4s ease-out}
+
+/* pills */
+.pills{display:flex;gap:10px;flex-wrap:wrap;margin:28px 0 8px}
+.pill{display:flex;align-items:center;gap:10px;background:#fff;border:1.5px solid var(--line);color:var(--plum);border-radius:999px;padding:8px 18px 8px 8px;font-family:var(--display);font-weight:600;font-size:16px;transition:all .25s ease-out}
+.pill .n{width:30px;height:30px;border-radius:50%;background:var(--lilac-soft);display:grid;place-items:center;font-size:14px}
+.pill .c{font-family:var(--sans);font-weight:500;font-size:13px;color:var(--muted)}
+.pill.active{background:var(--plum);border-color:var(--plum);color:#fff}
+.pill.active .n{background:rgba(255,255,255,.18)}
+.pill.active .c{color:rgba(255,255,255,.75)}
+.pill:disabled{opacity:.45;cursor:not-allowed}
+
+/* hero */
+.hero{position:relative;overflow:hidden;border-radius:var(--r-lg);background:linear-gradient(135deg,var(--plum) 0%,#4f4a6a 55%,var(--teal) 130%);color:#fff;padding:56px 48px;margin:28px 0}
+.hero h1{color:#fff;font-size:clamp(40px,6vw,72px);line-height:1.02;font-weight:700;max-width:640px}
+.hero p.lead{font-size:21px;max-width:560px;color:rgba(255,255,255,.88);margin:18px 0 0}
+.eyebrow{display:inline-block;font-family:var(--display);font-weight:600;font-size:13px;letter-spacing:.12em;text-transform:uppercase}
+.hero .eyebrow{background:rgba(255,255,255,.14);padding:6px 14px;border-radius:999px;margin-bottom:22px}
+.hero-art{position:absolute;right:-60px;top:-60px;width:420px;height:420px;pointer-events:none}
+@media(max-width:820px){.hero-art{opacity:.35}}
+
+.btn{display:inline-flex;align-items:center;gap:10px;background:var(--teal);color:#fff;border:0;border-radius:999px;padding:15px 28px;font-family:var(--display);font-weight:600;font-size:18px;box-shadow:var(--shadow-btn);transition:transform .2s ease-out,box-shadow .2s}
+.btn:hover{transform:translateY(-2px)}
+.btn.ghost{background:#fff;color:var(--plum);border:1.5px solid var(--line);box-shadow:none}
+.btn.light{background:#fff;color:var(--teal);box-shadow:none}
+.btn:disabled{opacity:.5;cursor:not-allowed;transform:none}
+
+/* start */
+.start-grid{display:grid;grid-template-columns:1.1fr .9fr;gap:24px;margin-bottom:60px}
+@media(max-width:820px){.start-grid{grid-template-columns:1fr}}
+.card{background:#fff;border-radius:var(--r-lg);box-shadow:var(--shadow);padding:32px}
+.card .eyebrow{color:var(--teal);margin-bottom:10px}
+.field{display:block;margin:18px 0}
+.field span{display:block;font-weight:600;font-size:15px;color:var(--plum);margin-bottom:6px}
+.field input{width:100%;font:inherit;padding:14px 18px;border:1.5px solid var(--line);border-radius:999px;outline:none;transition:border .2s}
+.field input:focus{border-color:var(--teal)}
+.map{background:var(--butter);border-radius:var(--r-md);padding:18px 20px;margin:0}
+.map li{margin:6px 0}
+.map ol{margin:8px 0 0;padding-left:22px}
+.tiny{font-size:14px;color:var(--muted)}
+
+/* section */
+.section{position:relative;margin:36px 0}
+.sec-head{display:flex;align-items:flex-end;gap:22px;margin-bottom:18px}
+.bignum{font-family:var(--display);font-weight:700;font-size:96px;line-height:.8;color:var(--lilac);letter-spacing:-.02em}
+.sec-head h2{font-size:34px;line-height:1.1}
+.sec-head .instr{color:var(--muted);margin:6px 0 0;font-size:17px}
+.tag{display:inline-block;background:var(--teal-soft);color:var(--teal);font-family:var(--display);font-weight:600;font-size:13px;padding:4px 12px;border-radius:999px;margin-right:6px}
+
+.qgrid{display:grid;grid-template-columns:repeat(2,1fr);gap:16px}
+@media(max-width:820px){.qgrid{grid-template-columns:1fr}}
+.q{background:#fff;border-radius:var(--r-md);border:1.5px solid var(--line);padding:20px 22px;transition:border-color .25s}
+.q.done{border-color:#d9cfe0}
+.q .qn{font-family:var(--display);font-weight:600;font-size:14px;color:var(--teal);letter-spacing:.06em}
+.q .stem{font-weight:500;color:var(--plum-deep);margin:4px 0 14px;font-size:18px}
+.blank{display:inline-block;min-width:64px;border-bottom:2.5px solid var(--lilac);margin:0 4px;transform:translateY(-3px)}
+.blank.filled{border:0;background:var(--highlight);border-radius:6px;padding:0 8px;min-width:0;transform:none;font-weight:600}
+.opts{display:flex;flex-wrap:wrap;gap:10px}
+.chip{display:flex;align-items:center;gap:8px;background:#fff;border:1.5px solid var(--line);color:var(--plum-deep);font-weight:600;border-radius:999px;padding:8px 16px 8px 8px;font-size:16px;text-align:left;transition:all .2s ease-out}
+.chip .l{flex:none;width:26px;height:26px;border-radius:50%;background:var(--lilac-soft);color:var(--plum);display:grid;place-items:center;font-family:var(--display);font-size:13px}
+.chip:hover{border-color:var(--lilac)}
+.chip.sel{background:var(--plum);border-color:var(--plum);color:#fff}
+.chip.sel .l{background:rgba(255,255,255,.2);color:#fff}
+.opts.col{flex-direction:column;align-items:stretch}
+.opts.col .chip{border-radius:var(--r-md)}
+.pop{animation:pop .3s ease-out}
+@keyframes pop{0%{transform:scale(.96)}60%{transform:scale(1.03)}100%{transform:scale(1)}}
+
+.reading{display:grid;grid-template-columns:1fr 1fr;gap:20px;align-items:start}
+@media(max-width:900px){.reading{grid-template-columns:1fr}}
+.passage{background:var(--cream);border-radius:var(--r-lg);padding:28px 30px;position:sticky;top:90px;max-height:calc(100vh - 110px);overflow:auto}
+@media(max-width:900px){.passage{position:static;max-height:none}}
+.passage p{margin:0 0 14px;font-size:17px}
+.passage mark{background:var(--highlight);border-radius:4px;padding:0 4px;color:inherit;font-weight:600}
+.reading .qs{display:flex;flex-direction:column;gap:14px}
+
+.writing{background:#fff;border-radius:var(--r-lg);box-shadow:var(--shadow);overflow:hidden;display:grid;grid-template-columns:.8fr 1.2fr}
+@media(max-width:820px){.writing{grid-template-columns:1fr}}
+.writing .brief{background:var(--teal);color:#fff;padding:32px}
+.writing .brief h3{color:#fff;font-size:26px;margin:8px 0 12px}
+.writing .brief p{margin:0 0 12px;color:rgba(255,255,255,.92)}
+.writing .brief .eyebrow{color:rgba(255,255,255,.75)}
+.writing .pad{padding:24px}
+.writing textarea{width:100%;min-height:300px;font:inherit;font-size:17px;line-height:1.6;padding:18px 20px;border:1.5px solid var(--line);border-radius:var(--r-md);outline:none;resize:vertical;color:var(--ink)}
+.writing textarea:focus{border-color:var(--teal)}
+.wc{display:flex;justify-content:space-between;align-items:center;margin-top:10px;font-size:15px;color:var(--muted)}
+.wc b{font-family:var(--display);color:var(--plum)}
+.wc .ok{color:var(--teal)}
+.meter{height:6px;background:var(--lilac-soft);border-radius:99px;flex:1;margin:0 14px;overflow:hidden}
+.meter i{display:block;height:100%;background:var(--lilac);width:0;transition:width .3s,background .3s}
+.meter i.ok{background:var(--teal-light)}
+
+.stage-foot{display:flex;justify-content:space-between;align-items:center;gap:16px;margin:40px 0 80px;flex-wrap:wrap}
+
+/* modal */
+.modal{position:fixed;inset:0;background:rgba(47,41,52,.45);display:none;align-items:center;justify-content:center;z-index:50;padding:20px}
+.modal.open{display:flex}
+.modal .card{max-width:480px;animation:pop .3s ease-out}
+.modal .row{display:flex;gap:12px;margin-top:20px;flex-wrap:wrap}
+
+/* results */
+.res-hero{display:grid;grid-template-columns:1.2fr .8fr;gap:24px;align-items:center}
+@media(max-width:820px){.res-hero{grid-template-columns:1fr}}
+.levelbig{font-family:var(--display);font-weight:700;font-size:clamp(52px,8vw,96px);line-height:.95;color:#fff}
+.cefr{display:inline-block;background:#fff;color:var(--plum);font-family:var(--display);font-weight:700;font-size:20px;padding:6px 16px;border-radius:999px;margin-top:16px}
+.ring-wrap{position:relative;width:220px;height:220px;margin:0 auto}
+.ring-wrap .t{position:absolute;inset:0;display:grid;place-items:center;text-align:center;color:#fff;font-family:var(--display)}
+.ring-wrap .t b{font-size:58px;line-height:1;display:block}
+.ring-wrap .t small{font-size:15px;opacity:.8}
+.scale{display:grid;grid-template-columns:repeat(6,1fr);gap:8px;margin-top:8px}
+.lv{border-radius:var(--r-md);padding:14px 12px;background:var(--lilac-soft);border:1.5px solid var(--line);text-align:left;transition:all .3s}
+.lv b{display:block;font-family:var(--display);color:var(--plum);font-size:16px;line-height:1.15}
+.lv span{font-size:13px;color:var(--muted)}
+.lv.on{background:var(--plum);border-color:var(--plum)}
+.lv.on b,.lv.on span{color:#fff}
+@media(max-width:820px){.scale{grid-template-columns:repeat(3,1fr)}}
+.res-grid{display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-top:24px}
+@media(max-width:820px){.res-grid{grid-template-columns:1fr}}
+.bar{margin:16px 0}
+.bar .top2{display:flex;justify-content:space-between;font-weight:600;color:var(--plum);font-size:16px}
+.bar .track{height:12px;background:var(--lilac-soft);border-radius:99px;overflow:hidden;margin-top:6px}
+.bar .track i{display:block;height:100%;border-radius:99px;background:var(--teal-light);width:0;transition:width .8s ease-out}
+.wres{border:1.5px solid var(--line);border-radius:var(--r-md);padding:14px 16px;margin:12px 0}
+.wres .h{display:flex;justify-content:space-between;align-items:center;font-weight:600;color:var(--plum)}
+.badge{font-family:var(--display);font-size:13px;font-weight:600;border-radius:999px;padding:3px 10px;background:var(--butter);color:var(--plum)}
+.badge.ok{background:var(--teal-soft);color:var(--teal)}
+.wres p{margin:8px 0 0;font-size:15px;color:var(--muted)}
+.callout{background:var(--butter);border-radius:var(--r-md);padding:16px 20px;margin-top:16px;font-size:16px}
+.actions{display:flex;gap:12px;flex-wrap:wrap;margin-top:20px}
+.toast{position:fixed;left:50%;bottom:28px;transform:translateX(-50%) translateY(20px);background:var(--plum);color:#fff;font-family:var(--display);padding:12px 22px;border-radius:999px;opacity:0;transition:all .3s ease-out;z-index:60}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+.fade{animation:fade .35s ease-out}
+@keyframes fade{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+.cando-head{display:flex;justify-content:space-between;align-items:flex-end;gap:16px;flex-wrap:wrap;margin-bottom:18px}
+.seg{display:flex;background:var(--lilac-soft);border:1.5px solid var(--line);border-radius:999px;padding:4px}
+.seg button{border:0;background:transparent;color:var(--plum);font-family:var(--display);font-weight:600;font-size:15px;padding:8px 16px;border-radius:999px;transition:all .25s ease-out}
+.seg button.on{background:var(--plum);color:#fff}
+.cando-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:16px}
+@media(max-width:820px){.cando-grid{grid-template-columns:1fr}}
+.skill{border:1.5px solid var(--line);border-radius:var(--r-md);padding:18px 20px}
+.sk-h{font-family:var(--display);font-weight:600;font-size:20px;color:var(--plum);display:flex;gap:8px;align-items:center;margin-bottom:8px}
+.skill p{margin:8px 0 0;font-size:16px}
+.skill .tag{display:table;margin-bottom:4px}
+.skill .next{color:var(--muted)}
+.next-tag{background:var(--butter)!important;color:var(--plum)!important}
+.rv-sec{font-family:var(--display);font-weight:600;color:var(--teal);font-size:14px;letter-spacing:.1em;text-transform:uppercase;margin:26px 0 10px}
+.rv{border:1.5px solid var(--line);border-left:5px solid var(--teal-light);border-radius:var(--r-md);padding:14px 18px;margin:10px 0}
+.rv.bad{border-left-color:var(--lilac)}
+.rv .rh{display:flex;gap:10px;align-items:center;font-family:var(--display);font-weight:600;color:var(--plum);font-size:15px}
+.rv .mark{width:24px;height:24px;border-radius:50%;display:grid;place-items:center;font-size:13px;color:#fff;background:var(--teal)}
+.rv.bad .mark{background:var(--lilac)}
+.rv .rs{margin:6px 0;font-weight:500;color:var(--plum-deep)}
+.rv .ans{display:flex;flex-wrap:wrap;gap:8px;font-size:15px;margin:6px 0}
+.rv .ans span{border-radius:999px;padding:3px 12px;background:var(--lilac-soft)}
+.rv .ans .yours.bad{text-decoration:line-through;color:var(--muted)}
+.rv .ans .right{background:var(--teal-soft);color:var(--teal);font-weight:600}
+.rv .why{font-size:15px;color:var(--ink);margin:6px 0 0}
+.rv .why b{color:var(--plum)}
+.hidden{display:none!important}
+</style>
+</head>
+<body>
+
+<header class="top">
+  <div class="wrap">
+    <div class="brand"><b>Renan <span>Lemes</span></b><small>Online English Lessons</small></div>
+    <div class="spacer"></div>
+    <div class="stat timer hidden" id="timer">⏱ 0:00</div>
+    <div class="stat hidden" id="answered">0 / 76</div>
+  </div>
+  <div class="progress" id="progress"></div>
+</header>
+
+<main class="wrap" id="app"></main>
+
+<div class="modal" id="modal"><div class="card" id="modalCard"></div></div>
+<div class="toast" id="toast"></div>
+
+<script>
+/* ---------- TEST DATA ---------- */
+const PARTS = [
+  {id:1,title:"Part one",mins:40,sections:[1,2,3,4]},
+  {id:2,title:"Part two",mins:40,sections:[5,6,7,8]},
+  {id:3,title:"Part three",mins:50,sections:[9,10,11,12]}
+];
+const MC_INSTR = "Choose the best word or phrase to fill each blank.";
+const SECTIONS = {
+ 1:{type:"mc",skill:"grammar",title:"Grammar",qs:[
+  [1,"Roberta _____ from The United States.",["are","is","am","be"]],
+  [2,"What's _____ name?",["—","his","him","he"]],
+  [3,"My friend _____ in London.",["living","live","lives","is live"]],
+  [4,"Where _____?",["works Tom","Tom works","Tom does work","does Tom work"]],
+  [5,"I _____ coffee.",["no like","not like","like don't","don't like"]],
+  [6,"'_____ to Australia, Ginny?' 'Yes, two years ago.'",["Did you ever go","Do you ever go","Have you ever been","Are you ever going"]],
+  [7,"Tokyo is _____ city I've ever lived in.",["the most big","the bigger","the biggest","the more big"]],
+  [8,"A vegetarian is someone _____ doesn't eat meat.",["who","what","which","whose"]],
+  [9,"_____ these days.",["I never a newspaper buy","I never buy a newspaper","I buy never a newspaper","Never I buy a newspaper"]],
+  [10,"I _____ watch TV tonight.",["am","go to","going to","am going to"]],
+  [11,"I wish I _____ more money!",["have","had","would have","was having"]],
+  [12,"_____ be famous one day?",["Would you like","Would you like to","Do you like","Do you like to"]]]},
+ 2:{type:"mc",skill:"vocab",title:"Vocabulary",qs:[
+  [13,"It's my birthday _____ Friday.",["on","in","at","by"]],
+  [14,"I _____ eighteen years old.",["am","have","have got","—"]],
+  [15,"I _____ a headache.",["am","do","have","got"]],
+  [16,"Do you _____ a uniform at your school?",["carry","wear","use","hold"]],
+  [17,"'What time is it?' 'I have no _____.'",["idea","opinion","answer","time"]],
+  [18,"The meal was very expensive. Look at the _____!",["ticket","receipt","invoice","bill"]],
+  [19,"How many _____ of trousers have you got?",["items","pairs","sets","times"]],
+  [20,"Joel came back from his holiday in Brazil looking really _____.",["tanned","sunned","coloured","darkened"]]]},
+ 3:{type:"reading",skill:"reading",title:"Reading",passage:[
+  "'Heavier than air flying machines are impossible,' said the well-known scientist Lord Kelvin in 1895. Thomas Watson, the chairman of IBM in 1943, was wrong too when he said that he thought there would be a world market for only five or so computers.",
+  "Predictions can, of course, be wrong, and it is very difficult to predict what the world will be like in 100, 50, or even 20 years from now. But this is something that scientists and politicians often do. They do so because they invent things and make decisions that <mark>shape</mark> the future of the world that we live in.",
+  "In the past they didn't have to think too much about the impact that their decisions had on the natural world. But that is now changing. An increasing number of people believe that we should live within the rules set by nature. In other words, they think that in a world of fixed and limited resources, what is used today will not be there for our children. We must therefore look at each human activity and try to change it or create alternatives if it is not sustainable. The rules for this are set by nature, not by man."],
+  qs:[
+  [21,"What was Lord Kelvin suggesting?",["It is difficult to make accurate predictions.","It would be possible for people to fly.","It would be impossible for people to fly.","There would only be a few computers."]],
+  [22,"According to the text, which of the following statements is TRUE?",["Lord Kelvin and Thomas Watson were good friends.","The world does not have unlimited natural resources.","Our children will not make predictions about the future.","It is easy to predict what the world will be like 20 years from now."]],
+  [23,"The highlighted word shape (paragraph 2) is closest in meaning to:",["do","create","look at","move"]],
+  [24,"The article suggests we should live in a _____ way.",["selfish","sustainable","predictable","scientific"]],
+  [25,"Choose the best title for the article.",["Predictions and more predictions!","Politicians and scientists","A sustainable future for our children","New inventions"]]]},
+ 4:{type:"writing",w:1,title:"Writing",label:"Writing 1 · items 26–33",min:80,max:100,mins:20,
+  heading:"Introduce yourself to a new pen-friend",
+  prompt:"Write a letter or email to your new pen-friend from abroad and introduce yourself. Say where you come from, where you live and give a little information about your family and friends as well as your hobbies and interests. Say how long you have been learning English and how you would like to improve your English."},
+ 5:{type:"mc",skill:"grammar",title:"Grammar",qs:[
+  [34,"Harry can _____ English.",["to speak","speaking","speak","speaks"]],
+  [35,"I'm not interested _____ sports.",["for","about","in","to"]],
+  [36,"She likes _____ expensive clothes.",["wearing","to wearing","wear","is wearing"]],
+  [37,"Harry _____ his father's car when the accident happened.",["was driving","drove","had driven","has been driving"]],
+  [38,"I was wondering _____ tell me when the next plane from Chicago arrives?",["could you","can you","if you could","if could you"]],
+  [39,"If I _____ him, I would have spoken to him, wouldn't I?",["saw","had seen","have seen","would have seen"]],
+  [40,"I like your hair. Where _____?",["do you have cut","have you cut it","do you have cut it","do you have it cut"]],
+  [41,"I think Joey must _____ late tonight. His office light is still on.",["have worked","work","be working","to work"]],
+  [42,"John tells me Jack's going out with Helen, _____ I find hard to believe.",["which","who","whose","that"]],
+  [43,"What _____ this weekend, Lance?",["will you do","are you doing","will you have done","do you do"]],
+  [44,"The weather has been awful. We've had very _____ sunshine this summer.",["little","a little","few","a few"]],
+  [45,"Did you hear what happened to Kate? She _____.",["is arrested","arrested","has been arrested","is being arrested"]]]},
+ 6:{type:"mc",skill:"vocab",title:"Vocabulary",qs:[
+  [46,"I usually _____ up at about 7.30.",["go","be","do","get"]],
+  [47,"I _____ football every week.",["play","go","do","have"]],
+  [48,"My sister _____ the cooking in our house.",["does","makes","cooks","takes"]],
+  [49,"Don't forget to _____ the light when you leave the room.",["turn up","turn in","turn off","turn over"]],
+  [50,"She was in _____ when she heard the tragic news.",["crying","tears","cries","tearful"]],
+  [51,"He _____ that he hadn't stolen the computer, but no one believed him.",["reassured","informed","insisted","persuaded"]],
+  [52,"Could you _____ me that book for a couple of days, please?",["lend","owe","borrow","rent"]],
+  [53,"Greg is _____ a lot of time at Yvonne's house these days!",["taking","spending","having","doing"]]]},
+ 7:{type:"reading",skill:"reading",title:"Reading",passage:[
+  "Many hotel chains and tour operators say that they take their environmental commitments seriously, but often they do not respect their social and economic responsibilities to the local community. So is it possible for travellers to help improve the lives of locals and still have a good holiday?",
+  "The charity, Tourism Concern, thinks so. It has pioneered the concept of the fair-trade holiday. The philosophy behind fair-trade travel is to make sure that local people get a fair share of the income from tourism. The objectives are simple: employing local people wherever possible; offering fair wages and treatment; showing cultural respect; involving communities in deciding how tourism is developed; and making sure that visitors have minimal environmental impact.",
+  "Although there is currently no official fair-trade accreditation for holidays, the Association of Independent Tour Operators has worked hard to produce responsible tourism guidelines for its members. Some new companies, operated as much by principles as profits, offer a fantastic range of holidays for responsible and adventurous travellers."],
+  qs:[
+  [54,"Tourism Concern…",["is a tour operator.","is a hotel.","is a charity.","is a chain of hotels."]],
+  [55,"Which of the following is NOT one of Tourism Concern's objectives?",["Good pay for local people.","Showing respect for local cultures.","Saving tourists money.","Protecting the local environment."]],
+  [56,"According to the text, fair-trade travel is all about…",["making money for charity.","money from tourism going to local people.","travellers getting a good deal.","a great cultural experience."]],
+  [57,"According to the text, there are _____ companies that are operated on principles as well as profits.",["a few","no","some old","many"]],
+  [58,"Choose the most appropriate title for the article.",["Holidays from heaven","Cheap adventure holidays","Fair-trade holidays","Great holiday deals"]]]},
+ 8:{type:"writing",w:2,title:"Writing",label:"Writing 2 · items 59–66",min:150,max:200,mins:20,
+  heading:"A Perfect Day",
+  prompt:"You are going to take part in a magazine competition for a story with the title 'A Perfect Day'. Write your story and use at least three of the following linking words: after, before, then, as soon as, by the time, just as, during, while."},
+ 9:{type:"mc",skill:"grammar",title:"Grammar",qs:[
+  [67,"Who _____ in that house?",["does live","lives","does he live","he lives"]],
+  [68,"I'll call you when I _____ home.",["get","'ll get","'ll have got","'m getting"]],
+  [69,"If you _____ me, what would you do?",["was","would be","were","have been"]],
+  [70,"I don't know where _____ last night.",["did he go","he did go","went he","he went"]],
+  [71,"John and Betty are coming to visit us tomorrow but I wish _____.",["they won't","they hadn't","they didn't","they weren't"]],
+  [72,"I'm so hungry! If only Bill _____ all the food in the fridge!",["wasn't eating","didn't eat","hadn't eaten","hasn't eaten"]],
+  [73,"I regret _____ harder in school.",["not studying","not to study","to not study","not have studied"]],
+  [74,"Surely Sue _____ you if she was unhappy with your work.",["will tell","would have told","must have told","had told"]],
+  [75,"Our neighbours aren't very polite, and _____ particularly quiet!",["neither they aren't","either they aren't","nor are they","neither did they be"]],
+  [76,"We had expected that they _____ fluent English, but in fact they didn't.",["were speaking","would speak","had spoken","spoke"]],
+  [77,"I'd rather _____ next weekend, but I do!",["I don't have to work","I didn't have to work","not to work","no working"]],
+  [78,"Harriet is so knowledgeable. She can talk about _____ subject that comes up.",["whatever","whenever","wherever","whoever"]]]},
+ 10:{type:"mc",skill:"vocab",title:"Vocabulary",qs:[
+  [79,"I always _____ milk in my coffee.",["have","drink","mix","make"]],
+  [80,"I _____ TV every evening.",["watch","look at","see","hear"]],
+  [81,"Can you give me a _____ with my bag?",["leg","back","hand","head"]],
+  [82,"Before you enter the triathlon, please bear in _____ that you're not as young as you used to be!",["thought","question","mind","opinion"]],
+  [83,"The breath test showed he had consumed more than three times the legal limit of alcohol, so the police arrested him for _____.",["trespassing","mugging","speeding","drunk driving"]],
+  [84,"The meeting was _____ and not very interesting.",["time-wasting","time-consuming","time-using","out of time"]],
+  [85,"After the movie was released, the main _____ point was its excessive use of violence.",["discussion","speaking","conversation","talking"]],
+  [86,"There have been several big _____ against the use of GM foods recently.",["campaigns","issues","boycotts","strikes"]]]},
+ 11:{type:"reading",skill:"reading",title:"Reading",passage:[
+  "Standards of spelling and grammar among an entire generation of English-speaking university students are now so poor that there is 'a degree of crisis' in their written use of the language, the publisher of a new dictionary has warned. Its research revealed that students have only a limited <mark>grasp</mark> of the most basic rules of spelling, punctuation and meaning, blamed in part on an increasing dependence on 'automatic tools' such as computer spellcheckers and unprecedented access to rapid communication using e-mail and the Internet. The problem is not confined to the US, but applies also to students in Australia, Canada and Britain.",
+  "Students were regularly found to be producing incomplete or rambling, poorly connected sentences, mixing metaphors 'with gusto' and overusing dull, devalued words such as 'interesting' and 'good'. Overall they were unclear about appropriate punctuation, especially the use of commas, and failed to understand the basic rules of subject/verb agreement and the difference between 'there', 'their' and 'they're'.",
+  "Kathy Rooney, editor-in-chief of the dictionary, said, 'We need to be very concerned at the extent of the problems with basic spelling and usage that our research has revealed. This has significant implications for the future, especially for young people. We thought it would be useful to get in touch with teachers and academics to find out what problems their students were having with their writing and what extra help they might need from a dictionary. The results were quite shocking. We are sure that the use of computers has played a part. People rely increasingly on automatic tools such as spellcheckers that are much more passive than going to a dictionary and looking something up. That can lull <mark>them</mark> into a false sense of security.'",
+  "Beth Marshall, an English professor, said, 'The type of student we're getting now is very different from what we were seeing 10 years ago and it is often worrying to find out how little students know. There are as many as 800 commonly misspelled words, particularly pairs of words that are pronounced similarly but spelled differently and that have different meanings – for example, \"faze\" and \"phase\", and \"pray\" and \"prey\".'"],
+  qs:[
+  [87,"The highlighted word grasp (paragraph 1) is closest in meaning to:",["ability","use","understanding","skill"]],
+  [88,"We can infer from the style of the text that this article was printed in a…",["newspaper.","dictionary.","novel.","guidebook."]],
+  [89,"Kathy Rooney carried out research to see…",["if students could spell certain words.","how widespread the use of computers is.","if academics were in touch with their students.","how dictionaries can help students."]],
+  [90,"The highlighted word them (paragraph 3) refers to:",["spellcheckers","computers","people","dictionaries"]],
+  [91,"According to Beth Marshall, students today…",["spell 800 words incorrectly on average.","like using spellcheckers.","mispronounce and misspell words.","are not as knowledgeable as they were in the past."]],
+  [92,"Choose the best title for the article.",["Standards of spelling and grammar","Dictionaries of the future","Students don't know their 'there' from their 'they're'","Automatic tools"]]]},
+ 12:{type:"writing",w:3,title:"Writing",label:"Writing 3 · items 93–100",min:200,max:220,mins:30,
+  heading:"Review a film",
+  prompt:"Write a review of a film you have seen for a local English-language newspaper. Include information about the plot, the acting, the cinematography and anything else you think is relevant."}
+};
+/* the answer key lives only on the server (netlify/functions/submit.mjs) */
+const KEY_NUMS = Object.values(SECTIONS).flatMap(s=>s.qs?s.qs.map(q=>q[0]):[]);
+
+const LEVELS = [
+  {min:0,max:9,name:"Beginner",cefr:"A1"},
+  {min:10,max:25,name:"Elementary",cefr:"A1+ to A2"},
+  {min:26,max:45,name:"Pre-intermediate",cefr:"A2+ to B1"},
+  {min:46,max:65,name:"Intermediate",cefr:"B1"},
+  {min:66,max:85,name:"Upper-intermediate",cefr:"B2"},
+  {min:86,max:100,name:"Advanced",cefr:"C1"}
+];
+
+/* ---------- STATE ---------- */
+const STORE = "rl-placement-full-v1";
+let S = {name:"",stage:0,answers:{},writing:{1:"",2:"",3:""},start:null,finished:false,finishedAt:null,result:null,sent:false};
+/* secret reset link for the teacher: .../#novo-teste starts a clean test on this browser */
+const RESET = location.hash === "#novo-teste";
+if(RESET){
+  try{localStorage.removeItem(STORE);}catch(e){}
+  try{history.replaceState(null,"",location.pathname+location.search);}catch(e){} // so a refresh doesn't reset again
+}
+try{const raw=localStorage.getItem(STORE); if(raw) S=Object.assign(S,JSON.parse(raw));}catch(e){}
+const save=()=>{try{localStorage.setItem(STORE,JSON.stringify(S));}catch(e){}};
+
+const $=s=>document.querySelector(s);
+const app=$("#app");
+const esc=t=>String(t).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const words=t=>(t.trim().match(/\S+/g)||[]).length;
+const answeredCount=()=>Object.keys(S.answers).length;
+
+function toast(msg){const t=$("#toast");t.textContent=msg;t.classList.add("show");clearTimeout(t._h);t._h=setTimeout(()=>t.classList.remove("show"),2200);}
+function updateTop(){
+  const show=S.stage>0;
+  $("#answered").classList.toggle("hidden",!show);
+  $("#timer").classList.toggle("hidden",!(show&&!S.finished));
+  $("#answered").textContent=`${answeredCount()} / 76 answered`;
+  $("#progress").style.width=(show?answeredCount()/76*100:0)+"%";
+}
+setInterval(()=>{
+  if(!S.start||S.finished) return;
+  const m=Math.floor((Date.now()-S.start)/60000);
+  $("#timer").textContent=`⏱ ${Math.floor(m/60)}h${String(m%60).padStart(2,"0")}`;
+},1000);
+
+/* ---------- ART ---------- */
+const heroArt=`<svg class="hero-art" viewBox="0 0 420 420" aria-hidden="true">
+  <circle cx="300" cy="140" r="170" fill="#bc94c4" opacity=".55"/>
+  <circle cx="160" cy="250" r="110" fill="#00736a"/>
+  <circle cx="300" cy="140" r="176" fill="none" stroke="#5f3e66" stroke-width="12" opacity=".6"/>
+  <circle cx="380" cy="360" r="70" fill="none" stroke="#4c9b8f" stroke-width="14"/>
+  <polyline points="70,90 98,62 126,90 154,62 182,90" fill="none" stroke="#fff" stroke-width="12" stroke-linecap="round" stroke-linejoin="round" opacity=".8"/>
+</svg>`;
+
+/* ---------- PILLS ---------- */
+function pills(){
+  const items=PARTS.map((p,i)=>{
+    const qs=p.sections.flatMap(id=>SECTIONS[id].qs?SECTIONS[id].qs.map(q=>q[0]):[]);
+    const done=qs.filter(n=>S.answers[n]!==undefined).length;
+    return `<button class="pill ${S.stage===i+1?"active":""}" data-go="${i+1}" ${S.finished?"disabled":""}><span class="n">${i+1}</span>${p.title} <span class="c">${done}/${qs.length}</span></button>`;
+  }).join("");
+  return `<nav class="pills">${items}<button class="pill ${S.stage===4?"active":""}" data-go="finish" ${S.finished?"":""}><span class="n">★</span>Results</button></nav>`;
+}
+
+/* ---------- RENDER ---------- */
+function render(){
+  updateTop();
+  if(S.finished){ if(S.result) renderResults(); else submit(); return;}
+  if(S.stage===0){renderStart();return;}
+  renderPart(PARTS[S.stage-1]);
+}
+
+function renderStart(){
+  app.innerHTML=`
+  <section class="hero fade">${heroArt}
+    <span class="eyebrow">Placement test · Full version</span>
+    <h1>Let's find your English level.</h1>
+    <p class="lead">Grammar, vocabulary, reading and writing. The questions get harder as you go — that's normal. Just do your best!</p>
+  </section>
+  <div class="start-grid fade">
+    <div class="card">
+      <span class="eyebrow">Before you start</span>
+      <h2 style="font-size:30px">Hi! What's your name?</h2>
+      <label class="field"><span>Your full name</span><input id="nm" value="${esc(S.name)}" placeholder="Type your name" autocomplete="name"></label>
+      <button class="btn" id="go">${S.start?"Continue the test →":"Start the test →"}</button>
+      ${S.start?`<p class="tiny" style="margin-top:14px">Your answers were saved on this device. <a href="#" id="reset" style="color:var(--teal)">Start again from zero</a></p>`:""}
+    </div>
+    <div class="card" style="background:var(--cream);box-shadow:none">
+      <span class="eyebrow">🗺️ Test map</span>
+      <div class="map">
+        <ol>
+          <li><b>Part one</b> · grammar, vocabulary, reading + a short email (≈ 40 min)</li>
+          <li><b>Part two</b> · grammar, vocabulary, reading + a story (≈ 40 min)</li>
+          <li><b>Part three</b> · grammar, vocabulary, reading + a film review (≈ 50 min)</li>
+        </ol>
+      </div>
+      <p class="tiny" style="margin-top:16px">About <b>2 hours</b> in total. 76 multiple-choice questions + 3 writing tasks. No dictionary or translator, please. If you don't know an answer, choose the one you think is best — try to answer everything. You'll see your result at the end.</p>
+    </div>
+  </div>`;
+  $("#go").onclick=()=>{
+    const n=$("#nm").value.trim();
+    if(!n){$("#nm").focus();toast("Please type your name first");return;}
+    S.name=n; if(!S.start) S.start=Date.now(); S.stage=1; save(); render(); scrollTo({top:0});
+  };
+  const r=$("#reset"); if(r) r.onclick=e=>{e.preventDefault();openModal(`<h2 style="font-size:26px">Start again?</h2><p>All your answers will be deleted.</p><div class="row"><button class="btn" data-m="yes">Yes, start again</button><button class="btn ghost" data-m="no">Cancel</button></div>`,v=>{if(v==="yes"){try{localStorage.removeItem(STORE);}catch(e){}location.reload();}});};
+}
+
+function stemHTML(q){
+  const n=q[0],sel=S.answers[n];
+  const stem=esc(q[1]);
+  if(!stem.includes("_____")) return stem;
+  const fill=sel!==undefined?`<span class="blank filled">${esc(q[2][sel]==="—"?"Ø":q[2][sel])}</span>`:`<span class="blank"></span>`;
+  return stem.replace("_____",fill);
+}
+function qHTML(q,col){
+  const n=q[0],sel=S.answers[n];
+  return `<div class="q ${sel!==undefined?"done":""}" id="q${n}">
+    <div class="qn">QUESTION ${n}</div>
+    <div class="stem">${stemHTML(q)}</div>
+    <div class="opts ${col?"col":""}">${q[2].map((o,i)=>`<button class="chip ${sel===i?"sel":""}" data-q="${n}" data-o="${i}"><span class="l">${"abcd"[i]}</span>${o==="—"?"— (nothing)":esc(o)}</button>`).join("")}</div>
+  </div>`;
+}
+function sectionHTML(id){
+  const s=SECTIONS[id], num=String(id).padStart(2,"0");
+  const skillTag={grammar:"Grammar",vocab:"Vocabulary",reading:"Reading"};
+  if(s.type==="mc") return `<section class="section fade">
+    <div class="sec-head"><div class="bignum">${num}</div><div><span class="tag">${skillTag[s.skill]}</span><h2>Section ${id}</h2><p class="instr">${MC_INSTR}</p></div></div>
+    <div class="qgrid">${s.qs.map(q=>qHTML(q)).join("")}</div></section>`;
+  if(s.type==="reading") return `<section class="section fade">
+    <div class="sec-head"><div class="bignum">${num}</div><div><span class="tag">Reading</span><h2>Section ${id}</h2><p class="instr">Read the text. For questions ${s.qs[0][0]}–${s.qs[s.qs.length-1][0]}, choose the best answer.</p></div></div>
+    <div class="reading"><div class="passage">${s.passage.map(p=>`<p>${p}</p>`).join("")}</div>
+    <div class="qs">${s.qs.map(q=>qHTML(q,true)).join("")}</div></div></section>`;
+  const t=S.writing[s.w]||"", wc=words(t);
+  return `<section class="section fade">
+    <div class="sec-head"><div class="bignum">${num}</div><div><span class="tag">Writing</span><h2>Section ${id}</h2><p class="instr">${s.label} · about ${s.mins} minutes</p></div></div>
+    <div class="writing">
+      <div class="brief"><span class="eyebrow">✍️ Your task</span><h3>${s.heading}</h3><p>${s.prompt}</p><p><b>Write ${s.min}–${s.max} words.</b></p></div>
+      <div class="pad">
+        <textarea data-w="${s.w}" placeholder="Start writing here…" spellcheck="false">${esc(t)}</textarea>
+        <div class="wc"><span><b data-wc="${s.w}">${wc}</b> words</span><div class="meter"><i data-wm="${s.w}"></i></div><span data-wt="${s.w}">target ${s.min}–${s.max}</span></div>
+      </div>
+    </div></section>`;
+}
+function updateMeter(w){
+  const s=Object.values(SECTIONS).find(x=>x.w==w), n=words(S.writing[w]||"");
+  const b=document.querySelector(`[data-wc="${w}"]`); if(!b) return;
+  b.textContent=n;
+  const m=document.querySelector(`[data-wm="${w}"]`); m.style.width=Math.min(100,n/s.max*100)+"%"; m.classList.toggle("ok",n>=s.min&&n<=s.max);
+  const t=document.querySelector(`[data-wt="${w}"]`); t.classList.toggle("ok",n>=s.min&&n<=s.max);
+  t.textContent=n>s.max?`a bit long (max ${s.max})`:n>=s.min?"✓ good length":`target ${s.min}–${s.max}`;
+}
+
+function renderPart(p){
+  const i=PARTS.indexOf(p);
+  app.innerHTML=`${pills()}
+  <section class="hero fade" style="padding:40px 48px;margin-top:18px">${heroArt}
+    <span class="eyebrow">Part ${i+1} of 3 · ≈ ${p.mins} min</span>
+    <h1 style="font-size:clamp(36px,5vw,60px)">${["Warming up.","Getting serious.","The final stretch."][i]}</h1>
+    <p class="lead">${["Simple structures, everyday words, a short text and an email.","Trickier grammar, a reading about travel and a short story.","Advanced grammar, a longer article and a film review."][i]}</p>
+  </section>
+  ${p.sections.map(sectionHTML).join("")}
+  <div class="stage-foot">
+    ${i>0?`<button class="btn ghost" data-go="${i}">← Part ${i}</button>`:"<span></span>"}
+    ${i<2?`<button class="btn" data-go="${i+2}">Next: Part ${i+2} →</button>`:`<button class="btn" data-go="finish">Finish and see my result →</button>`}
+  </div>`;
+  [1,2,3].forEach(updateMeter);
+}
+
+/* ---------- EVENTS ---------- */
+app.addEventListener("click",e=>{
+  const c=e.target.closest(".chip");
+  if(c){
+    const n=+c.dataset.q,o=+c.dataset.o; S.answers[n]=o; save();
+    const box=document.getElementById("q"+n);
+    box.querySelectorAll(".chip").forEach(x=>x.classList.toggle("sel",+x.dataset.o===o));
+    box.classList.add("done"); c.classList.remove("pop"); void c.offsetWidth; c.classList.add("pop");
+    const all=Object.values(SECTIONS).flatMap(s=>s.qs||[]); const q=all.find(x=>x[0]===n);
+    box.querySelector(".stem").innerHTML=stemHTML(q);
+    updateTop(); refreshPillCounts(); return;
+  }
+  const g=e.target.closest("[data-go]");
+  if(g){
+    const v=g.dataset.go;
+    if(v==="finish"){askFinish();return;}
+    S.stage=+v; save(); render(); scrollTo({top:0,behavior:"smooth"});
+  }
+});
+app.addEventListener("input",e=>{
+  const t=e.target.closest("textarea[data-w]"); if(!t) return;
+  S.writing[t.dataset.w]=t.value; save(); updateMeter(t.dataset.w);
+});
+app.addEventListener("paste",e=>{ if(e.target.closest("textarea[data-w]")) {e.preventDefault(); toast("Please type your own text 🙂");} });
+function refreshPillCounts(){const nav=document.querySelector(".pills"); if(nav) nav.outerHTML=pills();}
+
+/* ---------- MODAL ---------- */
+function openModal(html,cb){
+  const m=$("#modal"); $("#modalCard").innerHTML=html; m.classList.add("open");
+  m.onclick=e=>{const b=e.target.closest("[data-m]"); if(b||e.target===m){m.classList.remove("open"); cb&&cb(b?b.dataset.m:null);}};
+}
+function askFinish(){
+  const missing=KEY_NUMS.filter(n=>S.answers[n]===undefined);
+  const wMissing=[1,2,3].filter(w=>words(S.writing[w]||"")===0);
+  let msg="<p>After you finish, you can't change your answers.</p>";
+  if(missing.length||wMissing.length){
+    msg=`<p>You still have <b>${missing.length} unanswered question${missing.length===1?"":"s"}</b>${wMissing.length?` and <b>${wMissing.length} empty writing task${wMissing.length>1?"s":""}</b>`:""}.</p>
+    ${missing.length?`<p class="tiny">Questions: ${missing.slice(0,24).join(", ")}${missing.length>24?"…":""}</p>`:""}
+    <p>Unanswered items count as zero. Finish anyway?</p>`;
+  }
+  openModal(`<h2 style="font-size:28px">Ready to finish?</h2>${msg}<div class="row"><button class="btn" data-m="yes">Yes, show my result →</button><button class="btn ghost" data-m="no">Keep working</button></div>`,v=>{
+    if(v==="yes"){S.finished=true;S.finishedAt=Date.now();save();submit();}
+  });
+}
+
+/* ---------- CEFR CAN-DO (own summary of the CEFR descriptors) ---------- */
+const NOW_NEXT = {"Beginner":["A1","A2"],"Elementary":["A1","A2"],"Pre-intermediate":["A2","B1"],"Intermediate":["B1","B2"],"Upper-intermediate":["B2","C1"],"Advanced":["C1","C2"]};
+const SKILLS = [["listening","🎧","Listening"],["reading","📖","Reading"],["speaking","💬","Speaking"],["writing","✍️","Writing"]];
+const CANDO = {
+ general:{
+  A1:{listening:"Understand familiar words and very basic phrases about you, your family and things around you, when people speak slowly and clearly.",
+      reading:"Understand familiar names, words and very simple sentences on signs, notices and posters.",
+      speaking:"Ask and answer simple questions about very familiar topics, if the other person speaks slowly and helps you. Say where you live and who you know.",
+      writing:"Write a short, simple message or postcard and fill in forms with your personal details."},
+  A2:{listening:"Understand common phrases about everyday topics — family, shopping, your area, work — and the main point of short, clear messages.",
+      reading:"Read short, simple texts and find specific information in ads, menus and timetables. Understand short personal messages.",
+      speaking:"Handle simple, routine exchanges about familiar things. Describe your family, where you live, your studies or job in simple words.",
+      writing:"Write short notes and simple messages, like a thank-you email or a quick update to a friend."},
+  B1:{listening:"Follow the main points of clear speech about work, school and free time, and of many videos or podcasts on topics you like.",
+      reading:"Understand texts in everyday or work language, and personal messages describing events, feelings and wishes.",
+      speaking:"Manage most situations when travelling. Join a conversation on familiar topics, tell a story, describe plans and give short reasons for your opinions.",
+      writing:"Write simple, connected texts on familiar topics and personal messages about your experiences and impressions."},
+  B2:{listening:"Follow longer talks and fairly complex arguments on familiar topics. Understand most TV news, series and films in standard English.",
+      reading:"Read articles and reports about current issues where the writer takes a position. Enjoy modern fiction.",
+      speaking:"Talk with native speakers with good fluency and spontaneity. Take part in discussions, defend your views and explain pros and cons.",
+      writing:"Write clear, detailed texts on many subjects: essays, reports and emails that give reasons for or against an idea."},
+  C1:{listening:"Understand long, loosely structured speech and implied meaning. Watch films and series without much effort.",
+      reading:"Read long, complex texts — factual or literary — and notice differences in style. Handle specialised articles.",
+      speaking:"Express yourself fluently without obviously searching for words. Use English flexibly for social, academic and professional life.",
+      writing:"Write well-structured, detailed texts about complex subjects, choosing the right style for your reader."},
+  C2:{listening:"Understand any kind of spoken English with ease, even at fast natural speed.",
+      reading:"Read almost any text with ease, including abstract and structurally complex ones.",
+      speaking:"Take part in any conversation effortlessly and express fine shades of meaning precisely.",
+      writing:"Write smooth, polished texts in any style, including complex reports and reviews."}
+ },
+ business:{
+  A1:{listening:"Understand names, numbers, times and very simple instructions at work, said slowly.",
+      reading:"Understand simple signs, forms, name badges and basic information in a very short email.",
+      speaking:"Introduce yourself and your job, give your contact details and ask colleagues simple questions.",
+      writing:"Fill in a form with your personal and company details and write a very short note (\"Meeting at 3 pm\")."},
+  A2:{listening:"Understand simple routine requests and messages at work: dates, prices, quantities and directions.",
+      reading:"Understand short routine emails, schedules, product information and simple tables with numbers.",
+      speaking:"Talk about your job, company and daily tasks. Make simple arrangements on the phone and handle routine exchanges with clients.",
+      writing:"Write short routine emails: confirm a meeting, ask for information, say thank you."},
+  B1:{listening:"Follow the main points of meetings and presentations on familiar work topics when people speak clearly. Take simple messages.",
+      reading:"Understand most routine emails and reports in your area and find what you need in longer documents.",
+      speaking:"Take part in routine meetings and give opinions with simple reasons. Give a short prepared presentation and deal with most client situations.",
+      writing:"Write standard emails and short reports with a clear structure. Describe a problem and suggest a solution."},
+  B2:{listening:"Follow meetings, negotiations, calls and presentations in your field, including the arguments behind them.",
+      reading:"Read reports, proposals and articles in your field and understand the writer's attitude and viewpoint.",
+      speaking:"Participate actively in meetings and negotiations. Present and defend proposals, answer questions and handle complaints diplomatically.",
+      writing:"Write clear, detailed reports, proposals and emails in the right tone. Summarise information and arguments."},
+  C1:{listening:"Follow fast, complex discussions and implied meaning in meetings and calls, even with unfamiliar accents.",
+      reading:"Understand complex reports, contracts and long documents, including nuance and implications.",
+      speaking:"Lead meetings and negotiations. Persuade, manage disagreement and adapt your register to different audiences.",
+      writing:"Write persuasive, well-structured proposals, reports and sensitive emails with a precise, professional style."},
+  C2:{listening:"Understand any business English with ease, including fast, idiomatic exchanges.",
+      reading:"Read any business or legal text with ease, including subtle points.",
+      speaking:"Negotiate and present with complete precision and nuance.",
+      writing:"Write polished documents in any business genre with full control of tone."}
+ }
+};
+let track="general";
+function candoHTML(levelName){
+  const [now,next]=NOW_NEXT[levelName];
+  return `<div class="card fade" id="cando" style="margin-top:24px">
+    <div class="cando-head">
+      <div><span class="eyebrow">What this level means · CEFR</span>
+      <h2 style="font-size:30px">What you can do in English</h2></div>
+      <div class="seg" role="tablist">
+        <button class="${track==="general"?"on":""}" data-track="general">General English</button>
+        <button class="${track==="business"?"on":""}" data-track="business">Business English</button>
+      </div>
+    </div>
+    <div class="cando-grid">${SKILLS.map(([k,ic,t])=>`
+      <div class="skill">
+        <div class="sk-h"><span>${ic}</span>${t}</div>
+        <p class="now"><span class="tag">${now} · now</span>${CANDO[track][now][k]}</p>
+        <p class="next"><span class="tag next-tag">${next} · next goal</span>${CANDO[track][next][k]}</p>
+      </div>`).join("")}
+    </div>
+    <p class="tiny" style="margin-top:14px">Based on the Common European Framework of Reference (CEFR). This test measures grammar, vocabulary, reading and writing; listening and speaking show what is typical at this level.</p>
+  </div>`;
+}
+app.addEventListener("click",e=>{
+  const b=e.target.closest("[data-track]"); if(!b) return;
+  track=b.dataset.track;
+  const el=document.getElementById("cando"); el.outerHTML=candoHTML(S.result.level.name);
+});
+
+
+/* ---------- REVIEW (only after submitting) ---------- */
+let rvFilter="wrong";
+function reviewHTML(){
+  const r=S.result; if(!r.review) return "";
+  const byN={}; r.review.forEach(x=>byN[x.n]=x);
+  const nWrong=r.review.filter(x=>!x.ok).length;
+  const skillName={grammar:"Grammar",vocab:"Vocabulary",reading:"Reading"};
+  let html="";
+  Object.entries(SECTIONS).forEach(([id,s])=>{
+    if(!s.qs) return;
+    const items=s.qs.filter(q=>rvFilter==="all"||!byN[q[0]].ok);
+    if(!items.length) return;
+    html+=`<div class="rv-sec">Section ${id} · ${skillName[s.skill]}</div>`;
+    items.forEach(q=>{
+      const x=byN[q[0]], opt=i=>q[2][i]==="—"?"— (nothing)":esc(q[2][i]);
+      const stem=esc(q[1]).replace("_____",`<span class="blank filled">${q[2][x.correct]==="—"?"Ø":esc(q[2][x.correct])}</span>`);
+      html+=`<div class="rv ${x.ok?"":"bad"}">
+        <div class="rh"><span class="mark">${x.ok?"✓":"✗"}</span>Question ${q[0]}</div>
+        <div class="rs">${stem}</div>
+        <div class="ans">${x.chosen===null?`<span class="yours bad">No answer</span>`:`<span class="yours ${x.ok?"":"bad"}">Your answer: ${"abcd"[x.chosen]}) ${opt(x.chosen)}</span>`}
+          ${x.ok?"":`<span class="right">Correct: ${"abcd"[x.correct]}) ${opt(x.correct)}</span>`}</div>
+        <p class="why"><b>Why?</b> ${esc(x.why||"")}</p>
+      </div>`;
+    });
+  });
+  if(!html) html=`<p style="margin-top:16px">🎉 No wrong answers — amazing!</p>`;
+  return `<div class="card fade" id="review" style="margin-top:24px">
+    <div class="cando-head">
+      <div><span class="eyebrow">🔍 Review</span><h2 style="font-size:30px">Your answers, explained</h2></div>
+      <div class="seg"><button class="${rvFilter==="wrong"?"on":""}" data-rv="wrong">Wrong (${nWrong})</button><button class="${rvFilter==="all"?"on":""}" data-rv="all">All (76)</button></div>
+    </div>${html}</div>`;
+}
+app.addEventListener("click",e=>{
+  const b=e.target.closest("[data-rv]"); if(!b) return;
+  rvFilter=b.dataset.rv; document.getElementById("review").outerHTML=reviewHTML();
+});
+
+/* ---------- SUBMIT (scored on the server) ---------- */
+let submitting=false;
+async function submit(){
+  if(submitting) return; submitting=true;
+  updateTop();
+  app.innerHTML=`<section class="hero fade" style="min-height:360px">${heroArt}
+    <span class="eyebrow">${esc(S.name)} · Test finished</span>
+    <h1>Correcting your test…</h1>
+    <p class="lead">This takes about 20 seconds. Please don't close this page.</p></section>`;
+  scrollTo({top:0});
+  try{
+    const res=await fetch("/api/submit",{method:"POST",headers:{"Content-Type":"application/json"},
+      body:JSON.stringify({name:S.name,answers:S.answers,writing:S.writing,minutes:S.start?Math.round((S.finishedAt-S.start)/60000):null})});
+    if(!res.ok) throw new Error("HTTP "+res.status);
+    S.result=await res.json(); save();
+    submitting=false; renderResults();
+  }catch(e){
+    submitting=false;
+    app.innerHTML=`<section class="hero fade">${heroArt}
+      <span class="eyebrow">Connection problem</span>
+      <h1>We couldn't correct your test.</h1>
+      <p class="lead">Your answers are saved. Check your internet and try again.</p>
+      <div class="actions"><button class="btn light" id="retry">Try again →</button></div></section>`;
+    $("#retry").onclick=submit;
+  }
+}
+
+/* ---------- RESULTS ---------- */
+function renderResults(){
+  const r=S.result, L=r.level, idx=LEVELS.findIndex(l=>l.name===L.name);
+  updateTop();
+  const C=2*Math.PI*92, off=C*(1-r.total/100);
+  const mins=S.start&&S.finishedAt?Math.round((S.finishedAt-S.start)/60000):null;
+  const wLabels={1:"Email to a pen-friend",2:"Story: A Perfect Day",3:"Film review"};
+  const wTargets={1:[80,100],2:[150,200],3:[200,220]};
+  const wSum=[1,2,3].reduce((a,i)=>a+r.w[i].score,0);
+  app.innerHTML=`
+  <section class="hero fade">
+    <div class="res-hero" style="position:relative">
+      <div>
+        <span class="eyebrow">${esc(S.name)} · ${r.exact?"Your result":"Estimated result"}</span>
+        <div class="levelbig">${L.name}</div>
+        <span class="cefr">CEFR ${L.cefr}</span>
+        <p class="lead" style="margin-top:20px">${r.exact?"Great job finishing the test! Renan will be in touch about your classes.":"Great job finishing the test! Renan will check your writing to confirm your level."}</p>
+      </div>
+      <div class="ring-wrap">
+        <svg viewBox="0 0 220 220" width="220" height="220"><circle cx="110" cy="110" r="92" fill="none" stroke="rgba(255,255,255,.18)" stroke-width="16"/>
+        <circle id="ring" cx="110" cy="110" r="92" fill="none" stroke="#fff" stroke-width="16" stroke-linecap="round" stroke-dasharray="${C}" stroke-dashoffset="${C}" transform="rotate(-90 110 110)" style="transition:stroke-dashoffset 1.1s ease-out"/></svg>
+        <div class="t"><div><b>${r.total}</b><small>${r.exact?"out of 100":"≈ out of 100"}</small></div></div>
+      </div>
+    </div>
+  </section>
+
+  <div class="card fade">
+    <span class="eyebrow">Where you are</span>
+    <div class="scale">${LEVELS.map((l,i)=>`<div class="lv ${i===idx?"on":""}"><b>${l.name}</b><span>${l.cefr} · ${l.min}–${l.max}</span></div>`).join("")}</div>
+  </div>
+  ${candoHTML(L.name)}
+
+  <div class="res-grid fade">
+    <div class="card">
+      <span class="eyebrow">Multiple choice</span>
+      <h2 style="font-size:30px">${r.mc} <span style="color:var(--muted);font-size:20px">/ 76 points</span></h2>
+      ${[["Grammar","grammar"],["Vocabulary","vocab"],["Reading","reading"]].map(([t,k])=>`<div class="bar"><div class="top2"><span>${t}</span><span>${r.by[k][0]} / ${r.by[k][1]}</span></div><div class="track"><i data-w="${r.by[k][0]/r.by[k][1]*100}"></i></div></div>`).join("")}
+      ${mins!==null?`<p class="tiny">Time: ${Math.floor(mins/60)}h${String(mins%60).padStart(2,"0")}</p>`:""}
+    </div>
+    <div class="card">
+      <span class="eyebrow">Writing</span>
+      <h2 style="font-size:30px">${wSum} <span style="color:var(--muted);font-size:20px">/ 24 points${r.exact?"":" (estimate)"}</span></h2>
+      ${[1,2,3].map(i=>{const w=r.w[i],n=words(S.writing[i]||"");
+        const badge=w.status==="empty"?`<span class="badge">not written · 0/8</span>`:w.status==="ai"?`<span class="badge ok">${w.score} / 8</span>`:`<span class="badge">Renan will mark</span>`;
+        return `<div class="wres"><div class="h"><span>${i} · ${wLabels[i]}</span>${badge}</div><p>${n} words (target ${wTargets[i][0]}–${wTargets[i][1]})${w.comment?" · "+esc(w.comment):""}</p></div>`;}).join("")}
+    </div>
+  </div>
+
+  ${reviewHTML()}
+  <div class="card fade" style="margin:24px 0 80px">
+    <span class="eyebrow">📩 Done!</span>
+    <h2 style="font-size:28px">Renan has received your result</h2>
+    <p style="color:var(--muted)">Your result was sent to Renan automatically. If you want, you can also copy it and send it on WhatsApp.</p>
+    <div class="actions"><button class="btn ghost" id="copy">Copy my result</button></div>
+  </div>`;
+  requestAnimationFrame(()=>{ $("#ring").style.strokeDashoffset=off; document.querySelectorAll(".track i").forEach(i=>i.style.width=i.dataset.w+"%"); });
+  $("#copy").onclick=copyResult;
+}
+
+function resultText(){
+  const r=S.result, L=r.level;
+  const lines=[
+    `PLACEMENT TEST (Full) — ${S.name}`,
+    `Date: ${new Date(S.finishedAt||Date.now()).toLocaleString("pt-BR")}`,
+    `Time: ${S.start&&S.finishedAt?Math.round((S.finishedAt-S.start)/60000)+" min":"?"}`,
+    ``,
+    `${r.exact?"TOTAL":"ESTIMATED TOTAL"}: ${r.total}/100 → ${L.name} (${L.cefr})`,
+    `Multiple choice: ${r.mc}/76 (Grammar ${r.by.grammar[0]}/36 · Vocabulary ${r.by.vocab[0]}/24 · Reading ${r.by.reading[0]}/16)`,
+    `Writing: ${[1,2,3].map(i=>`W${i} ${r.w[i].status==="pending"?"? (not marked)":r.w[i].score+"/8"}`).join(" · ")}`,
+    ``
+  ];
+  [1,2,3].forEach(i=>{const w=r.w[i]; lines.push(`--- WRITING ${i} (${words(S.writing[i]||"")} words)${w.comment?" — "+w.comment:""} ---`, (S.writing[i]||"").trim()||"(empty)", "");});
+  return lines.join("\n");
+}
+async function copyResult(){
+  const txt=resultText();
+  try{await navigator.clipboard.writeText(txt); toast("Copied ✓");}
+  catch(e){
+    openModal(`<h2 style="font-size:24px">Copy your result</h2><p class="tiny">Select all the text below and copy it.</p><textarea style="width:100%;height:260px;font:inherit;font-size:14px;border:1.5px solid var(--line);border-radius:16px;padding:12px">${esc(txt)}</textarea><div class="row"><button class="btn" data-m="ok">Done</button></div>`);
+  }
+}
+
+render();
+if(RESET) setTimeout(()=>toast("New test ready ✓"),300);
+window.addEventListener("hashchange",()=>{ if(location.hash==="#novo-teste") location.reload(); });
+</script>
+
+<!-- Netlify Forms: hidden form so Netlify detects the fields at deploy time -->
+<form name="placement-results" netlify netlify-honeypot="bot-field" hidden>
+  <input name="bot-field"><input name="name"><input name="level"><input name="total"><input name="multiple_choice">
+  <input name="wrong_questions"><input name="writing_scores"><textarea name="full_report"></textarea>
+</form>
+</body>
+</html>
